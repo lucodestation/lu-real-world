@@ -101,6 +101,9 @@ export default {
       this.loading = true;
       const url = this.mode === 'register' ? '/users' : '/users/login';
 
+      if (this.mode !== 'register') {
+        delete this.formData.username;
+      }
       console.log(this.formData);
 
       // 发送请求

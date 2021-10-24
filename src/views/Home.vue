@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <!-- banner -->
-    <home-banner />
+    <HomeBanner />
 
     <div class="container page">
       <div class="row">
@@ -51,7 +51,7 @@
           </div>
 
           <!-- 文章列表/预览 -->
-          <article-preview
+          <ArticlePreview
             v-for="(article, index) in articles"
             :key="index"
             :article="article"
@@ -59,7 +59,7 @@
         </div>
 
         <!-- 标签 -->
-        <home-tags @tagArticles="tagArticles" />
+        <HomeTags @tagArticles="tagArticles" />
       </div>
     </div>
   </div>
@@ -69,10 +69,6 @@
 import request from '@/utils/request.js';
 
 import token from '@/utils/token.js';
-
-import HomeBanner from '@/components/HomeBanner.vue';
-import ArticlePreview from '@/components/ArticlePreview.vue';
-import HomeTags from '@/components/HomeTags.vue';
 
 export default {
   name: 'Home',
@@ -86,9 +82,9 @@ export default {
     };
   },
   components: {
-    HomeBanner,
-    ArticlePreview,
-    HomeTags
+    HomeBanner: () => import('@/components/HomeBanner.vue'),
+    ArticlePreview: () => import('@/components/ArticlePreview.vue'),
+    HomeTags: () => import('@/components/HomeTags.vue')
   },
   async mounted() {
     // 显示加载图标
@@ -106,14 +102,14 @@ export default {
       // 隐藏加载图标
       this.loading = false;
     });
-
-    if (articles) {
+    console.log('获取的文章列表', articles);
+    if (articles && articles.length) {
       console.log(articles);
       // 将数据放到 articles 上会自动传给子组件
       this.articles = articles.data.articles;
-      // 隐藏加载图标
-      this.loading = false;
     }
+    // 隐藏加载图标
+    this.loading = false;
   },
   methods: {
     // 我的订阅

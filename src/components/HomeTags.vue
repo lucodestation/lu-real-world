@@ -38,8 +38,13 @@ export default {
     this.isLoading = true;
     const tags = await request({
       url: '/tags'
+    }).catch((error) => {
+      console.log(error);
     });
-    this.tags = tags.data.tagList;
+    // console.log('获取的标签列表', tags);
+    if (tags && tags.length) {
+      this.tags = tags.data.tagList;
+    }
     this.isLoading = false;
   },
   methods: {
