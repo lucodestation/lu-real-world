@@ -103,7 +103,7 @@ export default {
       this.loading = false;
     });
     console.log('获取的文章列表', articles);
-    if (articles && articles.length) {
+    if (articles && articles.data.articles.length) {
       console.log(articles);
       // 将数据放到 articles 上会自动传给子组件
       this.articles = articles.data.articles;
