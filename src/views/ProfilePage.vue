@@ -123,7 +123,38 @@ export default {
     };
   },
   methods: {
-    // 加载文章
+    // 加载个人信息
+    async loadProfile() {
+      let options = {};
+      if (
+        this.$store.state.currentUser.username === this.$route.params.username
+      ) {
+        options = {
+          // 获取自己的信息
+          url: '/user',
+          headers: { Authorization: token() }
+        };
+      } else {
+        options = {
+          // 获取别人的信息
+          url: `/profiles/${this.$route.params.username}`
+        };
+      }
+
+      // 获取信息
+      const user = await request(options).catch((error) => {
+        // console.log(error);
+        if (error.statusCode === 404) {
+          console.error('找不到该用户');
+          this.notFound = true;
+        }
+      });
+
+      if (user) {
+        this.profile = user.data;
+      }
+    },
+    // 加载文章列表
     async loadArticle() {
       this.articles = [];
       this.loading = true;
@@ -177,36 +208,18 @@ export default {
       this.followLoading = false;
     }
   },
-  async mounted() {
+  watch: {
+    $route(to, from) {
+      // 加载个人信息
+      this.loadProfile();
+
+      // 加载文章列表
+      this.loadArticle();
+    }
+  },
+  mounted() {
     // 加载个人信息
-    let options = {};
-    if (
-      this.$store.state.currentUser.username === this.$route.params.username
-    ) {
-      options = {
-        // 获取自己的信息
-        url: '/user',
-        headers: { Authorization: token() }
-      };
-    } else {
-      options = {
-        // 获取别人的信息
-        url: `/profiles/${this.$route.params.username}`
-      };
-    }
-
-    // 获取信息
-    const user = await request(options).catch((error) => {
-      // console.log(error);
-      if (error.statusCode === 404) {
-        console.error('找不到该用户');
-        this.notFound = true;
-      }
-    });
-
-    if (user) {
-      this.profile = user.data;
-    }
+    this.loadProfile();
 
     // 加载文章列表
     this.loadArticle();
