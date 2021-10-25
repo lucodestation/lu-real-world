@@ -19,7 +19,7 @@ const store = new Vuex.Store({
         // 清空当前用户信息
         state.currentUser = {};
         // 删除 Token
-        console.log('删除 Token');
+        // console.log('删除 Token');
         localStorage.removeItem('token');
         // 重定向到首页
         router.push('/');
@@ -37,7 +37,7 @@ const store = new Vuex.Store({
       // router.push('/');
     },
     changeErrorArray(state, payload) {
-      console.log('payloadpayload', payload);
+      // console.log('payloadpayload', payload);
       if (payload.length !== 0) {
         state.errorArray = payload;
       } else {

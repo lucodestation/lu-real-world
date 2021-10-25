@@ -82,7 +82,7 @@ export default {
         method: 'delete',
         headers: { Authorization: token() }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
       this.$router.push('/');
     },
@@ -101,7 +101,7 @@ export default {
         url: `/profiles/${this.article.author.username}/follow`,
         method
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
       if (user) {
@@ -132,7 +132,7 @@ export default {
         url: `/articles/${this.article.slug}/favorite`,
         method
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
       if (article) {

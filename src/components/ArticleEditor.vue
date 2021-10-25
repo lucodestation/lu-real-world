@@ -100,10 +100,10 @@ export default {
       errorHandle(error.detail);
     });
 
-    console.log(article);
+    // console.log(article);
 
     if (article) {
-      console.log('获取需要编辑的文章');
+      // console.log('获取需要编辑的文章');
       Vue.set(this.formData, 'title', article.data.title);
       Vue.set(this.formData, 'description', article.data.description);
       Vue.set(this.formData, 'body', article.data.body);
@@ -148,7 +148,7 @@ export default {
           : `/articles/${this.formData.slug}`;
       const method = this.mode === 'create' ? 'post' : 'put';
 
-      console.log('创建文章');
+      // console.log('创建文章');
       const article = await request({
         url,
         method,
@@ -162,7 +162,7 @@ export default {
       });
 
       if (article) {
-        console.log(article);
+        // console.log(article);
         // 隐藏加载图标
         this.loading = false;
 

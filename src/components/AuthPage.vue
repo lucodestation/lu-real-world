@@ -104,7 +104,7 @@ export default {
       if (this.mode !== 'register') {
         delete this.formData.username;
       }
-      console.log(this.formData);
+      // console.log(this.formData);
 
       // 发送请求
       const user = await request({

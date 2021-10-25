@@ -134,7 +134,7 @@ export default {
         url: '/articles',
         params: { [paramsProp]: this.$route.params.username }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
       if (articles) {
@@ -157,7 +157,7 @@ export default {
     // 关注/取消关注按钮
     async followEvent() {
       if (!this.$store.state.isLoggedIn) {
-        console.log('还没登录哦');
+        // console.log('还没登录哦');
         this.$router.push('/register');
         return;
       }
@@ -170,7 +170,7 @@ export default {
         url: `/profiles/${this.profile.username}/follow`,
         method
       });
-      console.log(user);
+      // console.log(user);
       if (user) {
         this.profile = user.data;
       }
@@ -197,7 +197,7 @@ export default {
 
     // 获取信息
     const user = await request(options).catch((error) => {
-      console.log(error);
+      // console.log(error);
       if (error.statusCode === 404) {
         console.error('找不到该用户');
         this.notFound = true;

@@ -39,7 +39,7 @@ export default {
     const tags = await request({
       url: '/tags'
     }).catch((error) => {
-      console.log(error);
+      // console.log(error);
     });
     // console.log('获取的标签列表', tags);
     if (tags && tags.data.length) {

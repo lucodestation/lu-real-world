@@ -11,7 +11,7 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
-    console.log('请求拦截器');
+    // console.log('请求拦截器');
     config.url = requestBaseUrl + config.url;
     // 只要有 Token 就带着
     if (token().length > 150) {
@@ -21,7 +21,7 @@ service.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log('请求错误');
+    // console.log('请求错误');
     return Promise.reject(error);
   }
 );
@@ -29,12 +29,12 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
-    console.log('响应拦截器 response');
+    // console.log('响应拦截器 response');
     return response.data;
   },
   (error) => {
-    console.log('响应拦截器 error');
-    console.log('响应拦截器输出 error.response:', error.response);
+    // console.log('响应拦截器 error');
+    // console.log('响应拦截器输出 error.response:', error.response);
     if (error.response.status >= 500) {
       return Promise.reject({
         detail: '请求失败，服务器发生异常'

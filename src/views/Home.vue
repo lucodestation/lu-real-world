@@ -99,13 +99,13 @@ export default {
       }
     }).catch((error) => {
       // 捕捉错误
-      console.log(error);
+      // console.log(error);
       // 隐藏加载图标
       this.loading = false;
     });
-    console.log('获取的文章列表', articles);
+    // console.log('获取的文章列表', articles);
     if (articles && articles.data.articles.length) {
-      console.log(articles);
+      // console.log(articles);
       // 将数据放到 articles 上会自动传给子组件
       this.articles = articles.data.articles;
     }
@@ -124,7 +124,7 @@ export default {
       // 改变当前选项卡状态
       this.currentTabCard = 'feedArticles';
 
-      console.log('我的订阅');
+      // console.log('我的订阅');
       // 显示加载图标
       this.loading = true;
 
@@ -139,16 +139,16 @@ export default {
         }
       }).catch((error) => {
         // 捕捉错误
-        console.log(error);
+        // console.log(error);
         // 隐藏加载图标
         this.loading = false;
       });
 
       if (articles && articles.data.length) {
-        console.log(articles);
+        // console.log(articles);
         // 将数据放到 articles 上会自动传给子组件
         this.articles = articles.data.articles;
-        console.log('获取我的订阅', this.articles);
+        // console.log('获取我的订阅', this.articles);
       }
       // 隐藏加载图标
       this.loading = false;
@@ -161,7 +161,7 @@ export default {
       // 改变当前选项卡状态
       this.currentTabCard = 'allArticles';
 
-      console.log('所有文章');
+      // console.log('所有文章');
       // 显示加载图标
       this.loading = true;
 
@@ -176,13 +176,13 @@ export default {
         }
       }).catch((error) => {
         // 捕捉错误
-        console.log(error);
+        // console.log(error);
         // 隐藏加载图标
         this.loading = false;
       });
 
       if (articles) {
-        console.log(articles);
+        // console.log(articles);
         // 将数据放到 articles 上会自动传给子组件
         this.articles = articles.data.articles;
       }
@@ -194,7 +194,7 @@ export default {
       // 改变当前选项卡状态
       this.currentTabCard = 'tagArticles';
 
-      console.log('Home 组件', tag);
+      // console.log('Home 组件', tag);
       // console.log('标签对应的文章');
 
       // 显示加载图标
@@ -212,14 +212,14 @@ export default {
         }
       }).catch((error) => {
         // 捕捉错误
-        console.log(error);
+        // console.log(error);
         // 隐藏加载图标
         this.loading = false;
       });
 
       if (articles) {
         this.currentTag = tag;
-        console.log(articles);
+        // console.log(articles);
         // 将数据放到 articles 上会自动传给子组件
         this.articles = articles.data.articles;
         // 隐藏加载图标

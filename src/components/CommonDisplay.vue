@@ -92,11 +92,11 @@ export default {
         method: 'post',
         data: { body: this.body }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
       if (comment) {
-        console.log(comment);
+        // console.log(comment);
         this.loadComments();
         this.body = '';
       }
@@ -104,19 +104,19 @@ export default {
     },
     // 删除评论
     async deleteComment(event) {
-      console.log(event.target.dataset.comment);
-      console.log(event.target);
+      // console.log(event.target.dataset.comment);
+      // console.log(event.target);
 
       request({
         url: `/articles/${this.$route.params.slug}/comments/${event.target.dataset.comment}`,
         method: 'delete'
       })
         .then((result) => {
-          console.log('删除评论成功');
+          // console.log('删除评论成功');
           this.loadComments();
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
     // 加载评论
@@ -126,7 +126,7 @@ export default {
       const comments = await request({
         url: `/articles/${slug}/comments`
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
       if (comments) {

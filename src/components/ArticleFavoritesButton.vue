@@ -43,7 +43,7 @@ export default {
         method,
         headers: { Authorization: token() }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
       if (article) {

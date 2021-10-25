@@ -99,22 +99,22 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(async (vm) => {
-      console.log('article', vm.article);
+      // console.log('article', vm.article);
       const article = await request({
         url: `/articles/${vm.$route.params.slug}`
       }).catch((error) => {
-        console.log(error.detail);
+        // console.log(error.detail);
         if (error.statusCode === 404) {
           console.error('找不到该文章');
           vm.notFound = true;
         }
       });
 
-      console.log(article);
+      // console.log(article);
 
       if (article) {
-        console.log('获取文章详情');
-        console.log(article.data);
+        // console.log('获取文章详情');
+        // console.log(article.data);
         Vue.set(vm, 'article', article.data);
         Vue.set(vm, 'show', true);
       }
@@ -123,7 +123,7 @@ export default {
   methods: {
     // 点击 关注/取消关注 或 收藏/取消收藏 按钮会重新加载文章
     updateArticle(article) {
-      console.log('将要更新文章详情');
+      // console.log('将要更新文章详情');
       // this.show = false;
       this.article = article;
       // this.show = true;

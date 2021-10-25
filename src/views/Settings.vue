@@ -123,7 +123,7 @@ export default {
     });
 
     if (user) {
-      console.log('Settings.vue 获取当前用户数据成功');
+      // console.log('Settings.vue 获取当前用户数据成功');
       Vue.set(this.formData, 'image', user.data.image);
       Vue.set(this.formData, 'username', user.data.username);
       Vue.set(this.formData, 'bio', user.data.bio);
@@ -143,7 +143,7 @@ export default {
     },
     // 提交表单
     async formSubmit() {
-      console.log('Settings 表单数据', this.formData);
+      // console.log('Settings 表单数据', this.formData);
       // 清除错误信息
       errorHandle();
       // 显示加载图标
