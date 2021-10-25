@@ -144,7 +144,7 @@ export default {
         this.loading = false;
       });
 
-      if (articles && articles.data.length) {
+      if (articles && articles.data.articles.length) {
         // console.log(articles);
         // 将数据放到 articles 上会自动传给子组件
         this.articles = articles.data.articles;
