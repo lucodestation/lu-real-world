@@ -7,12 +7,7 @@
 
         <div v-if="notFound" style="text-align: center">
           <h1>404 NOT FOUND</h1>
-          <h5>
-            该文章不存在，即将返回
-            <router-link to="/">首页</router-link>
-            （<span>{{ timer }}</span
-            >）
-          </h5>
+          <h5>返回 <router-link to="/">首页</router-link></h5>
         </div>
 
         <!-- 文章作者 -->
@@ -81,15 +76,7 @@ export default {
     return {
       article: {},
       show: false,
-      notFound: false,
-      timer: 5,
-      timerRun: setInterval(() => {
-        this.timer--;
-        if (this.timer < 0) {
-          this.$router.push('/');
-          clearInterval(this.timer);
-        }
-      }, 1000)
+      notFound: false
     };
   },
   computed: {
@@ -125,7 +112,6 @@ export default {
       console.log(article);
 
       if (article) {
-        clearInterval(vm.timerRun);
         console.log('获取文章详情');
         console.log(article.data);
         Vue.set(vm, 'article', article.data);
@@ -141,9 +127,6 @@ export default {
       this.article = article;
       // this.show = true;
     }
-  },
-  beforeDestroy() {
-    clearInterval(this.timerRun);
   }
 };
 </script>

@@ -12,12 +12,7 @@
 
             <div v-if="notFound" style="text-align: center">
               <h1>404 NOT FOUND</h1>
-              <h5>
-                该用户不存在，即将返回
-                <router-link to="/">首页</router-link>
-                （<span>{{ timer }}</span
-                >）
-              </h5>
+              <h5>返回 <router-link to="/">首页</router-link></h5>
             </div>
 
             <!-- 个人简介 -->
@@ -125,15 +120,7 @@ export default {
       currentTabCard: 'myArticles',
       loading: false,
       followLoading: false,
-      notFound: false,
-      timer: 5,
-      timerRun: setInterval(() => {
-        this.timer--;
-        if (this.timer < 0) {
-          this.$router.push('/');
-          clearInterval(this.timer);
-        }
-      }, 1000)
+      notFound: false
     };
   },
   methods: {
@@ -226,7 +213,6 @@ export default {
     });
 
     if (user) {
-      clearInterval(this.timerRun);
       this.profile = user.data;
     }
 

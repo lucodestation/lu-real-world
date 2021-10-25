@@ -42,8 +42,8 @@ export default {
       console.log(error);
     });
     // console.log('获取的标签列表', tags);
-    if (tags && tags.length) {
-      this.tags = tags.data.tagList;
+    if (tags && tags.data.length) {
+      this.tags = tags.data;
     }
     this.isLoading = false;
   },
