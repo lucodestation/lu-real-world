@@ -50,14 +50,15 @@
         />
       </div>
 
-      <!-- 评论 -->
-      <CommonDisplay v-if="$store.state.isLoggedIn" />
-
-      <p v-else style="text-align: center">
+      <p v-if="!$store.state.isLoggedIn" style="text-align: center">
         <router-link to="/login" ui-sref="app.login">登录</router-link> 或
         <router-link to="/register" ui-sref="app.register">注册</router-link>
         来给这篇文章添加评论吧。
       </p>
+
+      <!-- 评论 -->
+      <!-- <CommonDisplay v-if="$store.state.isLoggedIn" /> -->
+      <CommonDisplay />
     </div>
   </div>
 </template>
