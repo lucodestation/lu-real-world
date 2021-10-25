@@ -7,7 +7,8 @@
 
         <div v-if="notFound" style="text-align: center">
           <h1>404 NOT FOUND</h1>
-          <h5>返回 <router-link to="/">首页</router-link></h5>
+          <br />
+          <h5>该文章不存在 | 返回 <router-link to="/">首页</router-link></h5>
         </div>
 
         <!-- 文章作者 -->
@@ -83,7 +84,7 @@ export default {
     mode() {
       if (
         this.article.author &&
-        this.article.author._id === this.$store.state.currentUser._id
+        this.article.author.username === this.$store.state.currentUser.username
       ) {
         return 'myself';
       }

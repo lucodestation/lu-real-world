@@ -33,17 +33,17 @@ const errorHandle = (error) => {
     return;
   }
 
-  // 自定义迭代器
-  const errorList = errorDetail2Iterator(error);
+  // // 自定义迭代器
+  // const errorList = errorDetail2Iterator(error);
 
-  const arr = [];
-  // 迭代
-  for (const item of errorList) {
-    arr.push(item);
-  }
+  // const arr = [];
+  // // 迭代
+  // for (const item of errorList) {
+  //   arr.push(item);
+  // }
 
   // 把错误信息提交到 store
-  store.commit('changeErrorArray', arr);
+  store.commit('changeErrorArray', error);
 };
 
 export { errorHandle };

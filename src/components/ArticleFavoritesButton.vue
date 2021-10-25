@@ -3,16 +3,14 @@
     @click="favoriteEvent"
     class="btn btn-sm pull-xs-right"
     :class="[
-      article.favorites.includes($store.state.currentUser._id)
-        ? 'btn-primary'
-        : 'btn-outline-primary',
+      article.favorited ? 'btn-primary' : 'btn-outline-primary',
       {
         disabled: favoriteLoading
       }
     ]"
   >
     <i class="ion-heart"></i>
-    {{ this.article.favorites.length }}
+    {{ this.article.favoritesCount }}
   </button>
 </template>
 
@@ -38,11 +36,7 @@ export default {
 
       this.favoriteLoading = true;
 
-      let method = this.article.favorites.includes(
-        this.$store.state.currentUser._id
-      )
-        ? 'delete'
-        : 'post';
+      let method = this.article.favorited ? 'delete' : 'post';
 
       const article = await request({
         url: `/articles/${this.article.slug}/favorite`,

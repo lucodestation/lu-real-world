@@ -46,6 +46,7 @@
           <div v-show="loading" class="article-preview">
             正在加载文章 <i class="ion-load-a"></i>
           </div>
+
           <div v-show="!articles.length && !loading" class="article-preview">
             没有文章
           </div>
@@ -135,9 +136,6 @@ export default {
         url: '/articles/feed',
         params: {
           // limit: 1
-        },
-        headers: {
-          Authorization: token()
         }
       }).catch((error) => {
         // 捕捉错误
@@ -146,13 +144,14 @@ export default {
         this.loading = false;
       });
 
-      if (articles) {
+      if (articles && articles.data.length) {
         console.log(articles);
         // 将数据放到 articles 上会自动传给子组件
         this.articles = articles.data.articles;
-        // 隐藏加载图标
-        this.loading = false;
+        console.log('获取我的订阅', this.articles);
       }
+      // 隐藏加载图标
+      this.loading = false;
     },
     // 全部文章
     async allArticles() {
@@ -186,9 +185,9 @@ export default {
         console.log(articles);
         // 将数据放到 articles 上会自动传给子组件
         this.articles = articles.data.articles;
-        // 隐藏加载图标
-        this.loading = false;
       }
+      // 隐藏加载图标
+      this.loading = false;
     },
     // 标签
     async tagArticles(tag) {

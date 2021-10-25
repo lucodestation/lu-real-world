@@ -5,7 +5,7 @@
       <form v-if="$store.state.isLoggedIn" class="card comment-form">
         <div class="card-block">
           <textarea
-            v-model="commentContent"
+            v-model="body"
             class="form-control"
             placeholder="请输入评论内容..."
             rows="3"
@@ -21,7 +21,7 @@
             @click="addComment"
             type="button"
             class="btn btn-sm btn-primary"
-            :disabled="commentContent.trim().length === 0 || loading"
+            :disabled="body.trim().length === 0 || loading"
           >
             发表评论
             <i v-show="loading" class="ion-load-a"></i>
@@ -33,27 +33,34 @@
       <div v-for="(comment, index) in comments" :key="index" class="card">
         <!-- 评论内容 -->
         <div class="card-block">
-          <p class="card-text">{{ comment.comment }}</p>
+          <p class="card-text">{{ comment.body }}</p>
         </div>
 
         <div class="card-footer">
           <!-- 评论者头像 -->
-          <a href="" class="comment-author">
+          <router-link
+            to="/profile/comment.author.username"
+            class="comment-author"
+          >
             <img :src="comment.author.image" class="comment-author-img" />
-          </a>
+          </router-link>
           &nbsp;
           <!-- 评论者用户名 -->
-          <a href="" class="comment-author">{{ comment.author.username }}</a>
+          <router-link
+            to="/profile/comment.author.username"
+            class="comment-author"
+            >{{ comment.author.username }}</router-link
+          >
           <!-- 评论日期 -->
           <span class="date-posted">{{ comment.createdAt.substr(0, 10) }}</span>
 
           <!-- 删除评论 -->
           <span
             @click="deleteComment"
-            v-if="comment.author._id === $store.state.currentUser._id"
+            v-if="comment.author.username === $store.state.currentUser.username"
             class="mod-options"
           >
-            <i :data-comment="comment._id" class="ion-trash-a"></i>
+            <i :data-comment="comment.id" class="ion-trash-a"></i>
           </span>
         </div>
       </div>
@@ -71,7 +78,7 @@ export default {
   data() {
     return {
       comments: [],
-      commentContent: '',
+      body: '',
       loading: false
     };
   },
@@ -83,16 +90,15 @@ export default {
       const comment = await request({
         url: `/articles/${this.$route.params.slug}/comments`,
         method: 'post',
-        headers: { Authorization: token() },
-        data: { comment: this.commentContent }
+        data: { body: this.body }
       }).catch((error) => {
         console.log(error);
       });
 
       if (comment) {
         console.log(comment);
-        this.comments.unshift(comment.data);
-        this.commentContent = '';
+        this.loadComments();
+        this.body = '';
       }
       this.loading = false;
     },
@@ -103,8 +109,7 @@ export default {
 
       request({
         url: `/articles/${this.$route.params.slug}/comments/${event.target.dataset.comment}`,
-        method: 'delete',
-        headers: { Authorization: token() }
+        method: 'delete'
       })
         .then((result) => {
           console.log('删除评论成功');
@@ -126,7 +131,7 @@ export default {
 
       if (comments) {
         // console.log('已获取文章评论', comments);
-        this.comments = comments.data.comments;
+        this.comments = comments.data;
       }
     }
   },

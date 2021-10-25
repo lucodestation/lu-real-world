@@ -110,6 +110,9 @@ export default {
   //   });
   // },
   async created() {
+    // 清空错误信息
+    this.$store.commit('changeErrorArray', []);
+
     const user = await request({
       url: '/user',
       headers: {

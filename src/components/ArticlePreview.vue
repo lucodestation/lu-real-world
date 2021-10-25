@@ -59,9 +59,6 @@ export default {
   },
   mounted() {},
   methods: {
-    testButton() {
-      console.log(this.article);
-    },
     updateArticle(article) {
       this.currentArticle = article;
     }

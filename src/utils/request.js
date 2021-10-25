@@ -1,6 +1,7 @@
 import axios from 'axios';
 // import Cookies from 'js-cookie';
 import { requestBaseUrl } from '@/config/index.js';
+import token from './token';
 
 // 创建一个 axios 实例
 const service = axios.create({
@@ -12,6 +13,11 @@ service.interceptors.request.use(
   (config) => {
     console.log('请求拦截器');
     config.url = requestBaseUrl + config.url;
+    // 只要有 Token 就带着
+    if (token().length > 150) {
+      config.headers.Authorization = token();
+      // headers: { Authorization: token() }
+    }
     return config;
   },
   (error) => {

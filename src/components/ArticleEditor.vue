@@ -88,6 +88,9 @@ export default {
     ErrorList: () => import('@/components/ErrorList.vue')
   },
   async created() {
+    // 清空错误信息
+    this.$store.commit('changeErrorArray', []);
+
     if (this.mode !== 'editor') {
       return;
     }

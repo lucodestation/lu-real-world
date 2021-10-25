@@ -32,13 +32,7 @@
     >
       <i class="ion-plus-round"></i>
       &nbsp;
-      {{
-        article.author.follows.includes($store.state.currentUser._id)
-          ? '取消关注'
-          : '关注'
-      }}
-
-      <span class="counter">({{ article.author.follows.length }})</span>
+      {{ article.author.following ? '取消关注' : '关注' }}
     </button>
 
     &nbsp;&nbsp;
@@ -60,12 +54,8 @@
     >
       <i class="ion-heart"></i>
       &nbsp;
-      {{
-        article.favorites.includes($store.state.currentUser._id)
-          ? '取消收藏'
-          : '收藏'
-      }}
-      <span class="counter"> ({{ article.favorites.length }}) </span>
+      {{ article.favorited ? '取消收藏' : '收藏' }}
+      <span class="counter"> ({{ article.favoritesCount }}) </span>
     </button>
   </div>
 </template>
@@ -105,16 +95,11 @@ export default {
 
       this.followLoading = true;
 
-      let method = this.article.author.follows.includes(
-        this.$store.state.currentUser._id
-      )
-        ? 'delete'
-        : 'post';
+      let method = this.article.author.following ? 'delete' : 'post';
 
       const user = await request({
         url: `/profiles/${this.article.author.username}/follow`,
-        method,
-        headers: { Authorization: token() }
+        method
       }).catch((error) => {
         console.log(error);
       });
@@ -141,16 +126,11 @@ export default {
 
       this.favoriteLoading = true;
 
-      let method = this.article.favorites.includes(
-        this.$store.state.currentUser._id
-      )
-        ? 'delete'
-        : 'post';
+      let method = this.article.favorited ? 'delete' : 'post';
 
       const article = await request({
         url: `/articles/${this.article.slug}/favorite`,
-        method,
-        headers: { Authorization: token() }
+        method
       }).catch((error) => {
         console.log(error);
       });

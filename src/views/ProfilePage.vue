@@ -5,14 +5,17 @@
         <div class="row">
           <div class="col-xs-12 col-md-10 offset-md-1">
             <!-- 头像 -->
-            <img :src="profile.image" class="user-img" />
+            <img v-if="!notFound" :src="profile.image" class="user-img" />
 
             <!-- 用户名 -->
             <h4>{{ profile.username }}</h4>
 
             <div v-if="notFound" style="text-align: center">
               <h1>404 NOT FOUND</h1>
-              <h5>返回 <router-link to="/">首页</router-link></h5>
+              <br />
+              <h5>
+                该用户不存在 | 返回 <router-link to="/">首页</router-link>
+              </h5>
             </div>
 
             <!-- 个人简介 -->
@@ -41,11 +44,7 @@
               }"
             >
               <i class="ion-plus-round"></i>
-              {{
-                this.profile.follows.includes(this.$store.state.currentUser._id)
-                  ? '取消关注'
-                  : '关注'
-              }}
+              {{ this.profile.following ? '取消关注' : '关注' }}
             </button>
           </div>
         </div>
@@ -165,18 +164,11 @@ export default {
 
       this.followLoading = true;
 
-      const method = this.profile.follows.includes(
-        this.$store.state.currentUser._id
-      )
-        ? 'delete'
-        : 'post';
+      const method = this.profile.following ? 'delete' : 'post';
 
       const user = await request({
         url: `/profiles/${this.profile.username}/follow`,
-        method,
-        headers: {
-          Authorization: token()
-        }
+        method
       });
       console.log(user);
       if (user) {
