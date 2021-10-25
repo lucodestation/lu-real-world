@@ -18,7 +18,7 @@ import '@/styles/main.css';
 // 如果本地存储中有 Token ，将尝试获取用户信息
 if (token().length > 150) {
   // 使用 jQuery 发送同步请求，axios 不支持同步
-  const user = jquery.ajax({
+  const result = jquery.ajax({
     url: requestBaseUrl + '/user',
     // 同步
     async: false,
@@ -27,8 +27,12 @@ if (token().length > 150) {
     }
   });
 
+  if (result.status === 401) {
+    console.log('Token 已失效');
+    localStorage.removeItem('token');
+  }
   // 将用户信息保存到 store
-  store.commit('changeCurrentUser', user.responseJSON.data);
+  store.commit('changeCurrentUser', result.responseJSON.data);
 }
 
 new Vue({
