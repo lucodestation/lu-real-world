@@ -6,6 +6,9 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
+          <!-- 分页 -->
+          <!-- <Pagination /> -->
+
           <!-- 选项卡 -->
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
@@ -85,7 +88,8 @@ export default {
   components: {
     HomeBanner: () => import('@/components/HomeBanner.vue'),
     ArticlePreview: () => import('@/components/ArticlePreview.vue'),
-    HomeTags: () => import('@/components/HomeTags.vue')
+    HomeTags: () => import('@/components/HomeTags.vue'),
+    Pagination: () => import('@/components/Pagination.vue')
   },
   async mounted() {
     // 显示加载图标
