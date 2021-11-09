@@ -77,11 +77,7 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import request from '@/utils/request.js';
-
-import token from '@/utils/token.js';
-
+import api from '@/utils/api.js';
 import { errorHandle } from '@/utils/index.js';
 
 export default {
@@ -89,45 +85,19 @@ export default {
   components: {
     ErrorList: () => import('@/components/ErrorList.vue')
   },
-  // beforeRouteEnter(to, from, next) {
-  //   next(async (vm) => {
-  //     const user = await request({
-  //       url: '/user',
-  //       headers: {
-  //         Authorization: token()
-  //       }
-  //     }).catch((error) => {
-  //       errorHandle(error.detail);
-  //     });
-
-  //     if (user) {
-  //       console.log('Settings.vue 获取当前用户数据成功');
-  //       Vue.set(vm.formData, 'image', user.data.image);
-  //       Vue.set(vm.formData, 'username', user.data.username);
-  //       Vue.set(vm.formData, 'bio', user.data.bio);
-  //       Vue.set(vm.formData, 'email', user.data.email);
-  //     }
-  //   });
-  // },
   async created() {
-    // 清空错误信息
-    this.$store.commit('changeErrorArray', []);
+    // 清除错误信息
+    errorHandle();
 
-    const user = await request({
-      url: '/user',
-      headers: {
-        Authorization: token()
-      }
-    }).catch((error) => {
-      errorHandle(error.detail);
-    });
+    const user = await api.getCurrentUserInfo();
 
     if (user) {
-      // console.log('Settings.vue 获取当前用户数据成功');
-      Vue.set(this.formData, 'image', user.data.image);
-      Vue.set(this.formData, 'username', user.data.username);
-      Vue.set(this.formData, 'bio', user.data.bio);
-      Vue.set(this.formData, 'email', user.data.email);
+      this.formData = {
+        image: user.data.image,
+        username: user.data.username,
+        bio: user.data.bio,
+        email: user.data.email
+      };
     }
   },
   data() {
@@ -143,31 +113,19 @@ export default {
     },
     // 提交表单
     async formSubmit() {
-      // console.log('Settings 表单数据', this.formData);
       // 清除错误信息
       errorHandle();
       // 显示加载图标
       this.loading = true;
-      // 修改信息
-      const result = await request({
-        url: '/user',
-        method: 'put',
-        headers: {
-          Authorization: token()
-        },
-        data: this.formData
-      }).catch((error) => {
-        // 处理错误信息
-        errorHandle(error.detail);
-        // 隐藏加载图标
-        this.loading = false;
-      });
-      if (result) {
-        // 隐藏加载图标
-        this.loading = false;
+
+      const user = await api.updateCurrentUserInfo(this.formData);
+
+      if (user) {
         // 刷新页面
         this.$router.go(0);
       }
+      // 隐藏加载图标
+      this.loading = false;
     }
   }
 };

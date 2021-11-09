@@ -58,24 +58,24 @@
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
                 <a
-                  @click="myArticles"
+                  @click="changeTab('myArticles')"
                   class="nav-link"
                   :class="{
                     active: currentTabCard === 'myArticles'
                   }"
                   href="javascript:"
-                  >我的文章</a
+                  >文章列表</a
                 >
               </li>
               <li class="nav-item">
                 <a
-                  @click="myFavorites"
+                  @click="changeTab('myFavorites')"
                   class="nav-link"
                   :class="{
                     active: currentTabCard === 'myFavorites'
                   }"
                   href="javascript:"
-                  >我的收藏</a
+                  >收藏夹</a
                 >
               </li>
             </ul>
@@ -101,9 +101,7 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
-
-import token from '@/utils/token.js';
+import api from '@/utils/api.js';
 
 export default {
   name: 'ProfilePage',
@@ -119,53 +117,38 @@ export default {
       currentTabCard: 'myArticles',
       loading: false,
       followLoading: false,
-      notFound: false
+      notFound: true
     };
   },
   methods: {
     // 加载个人信息
     async loadProfile() {
-      let options = {};
-      if (
-        this.$store.state.currentUser.username === this.$route.params.username
-      ) {
-        options = {
-          // 获取自己的信息
-          url: '/user',
-          headers: { Authorization: token() }
-        };
-      } else {
-        options = {
-          // 获取别人的信息
-          url: `/profiles/${this.$route.params.username}`
-        };
-      }
+      const username = this.$route.params.username;
+
+      // 判断是获取自己的信息还是获取他人的信息
+      const prop =
+        username === this.$store.state.currentUser.username
+          ? 'getCurrentUserInfo'
+          : 'getProfiles';
 
       // 获取信息
-      const user = await request(options).catch((error) => {
-        // console.log(error);
-        if (error.statusCode === 404) {
-          console.error('找不到该用户');
-          this.notFound = true;
-        }
-      });
+      const user = await api[prop](username);
 
       if (user) {
         this.profile = user.data;
+        this.notFound = false;
       }
     },
     // 加载文章列表
     async loadArticle() {
       this.articles = [];
       this.loading = true;
+
       const paramsProp =
         this.currentTabCard === 'myArticles' ? 'author' : 'favorited';
 
-      const articles = await request({
-        url: '/articles',
-        params: { [paramsProp]: this.$route.params.username }
-      }).catch((error) => {
-        // console.log(error);
+      const articles = await api.getArticles({
+        [paramsProp]: this.$route.params.username
       });
 
       if (articles) {
@@ -173,17 +156,13 @@ export default {
       }
       this.loading = false;
     },
-    myFavorites() {
-      if (this.currentTabCard === 'myArticles') {
-        this.currentTabCard = 'myFavorites';
-        this.loadArticle();
+    // 切换选项卡
+    changeTab(tab) {
+      if (this.currentTabCard === tab) {
+        return;
       }
-    },
-    myArticles() {
-      if (this.currentTabCard === 'myFavorites') {
-        this.currentTabCard = 'myArticles';
-        this.loadArticle();
-      }
+      this.currentTabCard = tab;
+      this.loadArticle();
     },
     // 关注/取消关注按钮
     async followEvent() {
@@ -195,13 +174,11 @@ export default {
 
       this.followLoading = true;
 
-      const method = this.profile.following ? 'delete' : 'post';
+      // 判断是关注还是取消关注
+      const prop = this.profile.following ? 'deleteFollowUser' : 'followUser';
 
-      const user = await request({
-        url: `/profiles/${this.profile.username}/follow`,
-        method
-      });
-      // console.log(user);
+      const user = await api[prop](this.profile.username);
+
       if (user) {
         this.profile = user.data;
       }
@@ -210,6 +187,8 @@ export default {
   },
   watch: {
     $route(to, from) {
+      this.currentTabCard = 'myArticles';
+
       // 加载个人信息
       this.loadProfile();
 
@@ -217,7 +196,7 @@ export default {
       this.loadArticle();
     }
   },
-  mounted() {
+  created() {
     // 加载个人信息
     this.loadProfile();
 

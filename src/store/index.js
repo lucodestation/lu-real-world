@@ -7,8 +7,11 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
+    // 用户是否登录
     isLoggedIn: false,
+    // 当前用户信息
     currentUser: {},
+    // 错误信息数组（注册、登录、设置、创建文章、编辑文章会用到）
     errorArray: []
   },
   mutations: {

@@ -15,9 +15,7 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
-
-import token from '@/utils/token.js';
+import api from '@/utils/api.js';
 
 export default {
   name: 'ArticleFavoritesButton',
@@ -36,15 +34,12 @@ export default {
 
       this.favoriteLoading = true;
 
-      let method = this.article.favorited ? 'delete' : 'post';
+      // 判断是收藏还是取消收藏
+      const prop = this.article.favorited
+        ? 'deleteFavoriteArticle'
+        : 'favoriteArticle';
 
-      const article = await request({
-        url: `/articles/${this.article.slug}/favorite`,
-        method,
-        headers: { Authorization: token() }
-      }).catch((error) => {
-        // console.log(error);
-      });
+      const article = await api[prop](this.article.slug);
 
       if (article) {
         this.$emit('updateArticle', article.data);

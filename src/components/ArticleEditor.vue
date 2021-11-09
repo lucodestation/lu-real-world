@@ -76,10 +76,8 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import request from '@/utils/request.js';
 import { errorHandle } from '@/utils/index.js';
-import token from '@/utils/token.js';
+import api from '@/utils/api.js';
 
 export default {
   name: 'ArticleEditor',
@@ -88,28 +86,22 @@ export default {
     ErrorList: () => import('@/components/ErrorList.vue')
   },
   async created() {
-    // 清空错误信息
-    this.$store.commit('changeErrorArray', []);
+    // 清除错误信息
+    errorHandle();
 
     if (this.mode !== 'editor') {
       return;
     }
-    const article = await request({
-      url: `/articles/${this.$route.params.slug}`
-    }).catch((error) => {
-      errorHandle(error.detail);
-    });
 
-    // console.log(article);
+    const article = await api.getArticle(this.$route.params.slug);
 
     if (article) {
-      // console.log('获取需要编辑的文章');
-      Vue.set(this.formData, 'title', article.data.title);
-      Vue.set(this.formData, 'description', article.data.description);
-      Vue.set(this.formData, 'body', article.data.body);
-      Vue.set(this.formData, 'tagList', article.data.tagList);
-      Vue.set(this.formData, 'slug', article.data.slug);
-      // console.table('this.article', this.formData);
+      this.formData = {
+        title: article.data.title,
+        description: article.data.description,
+        body: article.data.body,
+        tagList: article.data.tagList
+      };
     }
   },
   data() {
@@ -142,33 +134,18 @@ export default {
       // 显示加载图标
       this.loading = true;
 
-      const url =
-        this.mode === 'create'
-          ? '/articles'
-          : `/articles/${this.formData.slug}`;
-      const method = this.mode === 'create' ? 'post' : 'put';
+      // 判断是创建还是更新
+      const prop = this.mode === 'create' ? 'createArticle' : 'updateArticle';
 
-      // console.log('创建文章');
-      const article = await request({
-        url,
-        method,
-        headers: { Authorization: token() },
-        data: this.formData
-      }).catch((error) => {
-        // 处理错误信息
-        errorHandle(error.detail);
-        // 隐藏加载图标
-        this.loading = false;
-      });
+      const article = await api[prop](this.formData, this.$route.params.slug);
 
       if (article) {
-        // console.log(article);
-        // 隐藏加载图标
-        this.loading = false;
-
         // 跳转到文章详情页
         this.$router.push(`/article/${article.data.slug}`);
       }
+
+      // 隐藏加载图标
+      this.loading = false;
     }
   },
   computed: {

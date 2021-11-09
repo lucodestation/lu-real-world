@@ -38,7 +38,7 @@
               <input
                 v-model="formData.email"
                 class="form-control form-control-lg"
-                type="text"
+                type="email"
                 placeholder="邮箱"
                 @keyup.enter="enterEvent"
               />
@@ -74,11 +74,11 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
 import { errorHandle } from '@/utils/index.js';
+import api from '@/utils/api.js';
 
 export default {
-  name: 'Register',
+  name: 'AuthPage',
   props: ['mode'],
   components: {
     ErrorList: () => import('@/components/ErrorList.vue')
@@ -99,33 +99,21 @@ export default {
       errorHandle();
       // 显示加载图标
       this.loading = true;
-      const url = this.mode === 'register' ? '/users' : '/users/login';
 
-      if (this.mode !== 'register') {
-        delete this.formData.username;
-      }
-      // console.log(this.formData);
+      // 判断是注册还是登录
+      const prop = this.mode === 'register' ? 'register' : 'login';
 
-      // 发送请求
-      const user = await request({
-        url,
-        method: 'post',
-        data: this.formData
-      }).catch((error) => {
-        // 处理错误信息
-        errorHandle(error.detail);
-        // 隐藏加载图标
-        this.loading = false;
-      });
+      const user = await api[prop](this.formData);
 
       if (user) {
-        // 隐藏加载图标
-        this.loading = false;
         // 将用户信息放到 store 中
         this.$store.commit('changeCurrentUser', user.data);
         // 重定向到首页
         this.$router.push('/');
       }
+
+      // 隐藏加载图标
+      this.loading = false;
     },
     enterEvent() {
       this.canSubmit && this.formSubmit();

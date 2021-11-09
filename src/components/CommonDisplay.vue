@@ -56,11 +56,11 @@
 
           <!-- 删除评论 -->
           <span
-            @click="deleteComment"
+            @click="deleteComment(comment.id)"
             v-if="comment.author.username === $store.state.currentUser.username"
             class="mod-options"
           >
-            <i :data-comment="comment.id" class="ion-trash-a"></i>
+            <i class="ion-trash-a"></i>
           </span>
         </div>
       </div>
@@ -69,9 +69,7 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
-
-import token from '@/utils/token.js';
+import api from '@/utils/api.js';
 
 export default {
   name: 'CommonDisplay',
@@ -85,52 +83,33 @@ export default {
   methods: {
     // 发表评论
     async addComment() {
+      // 显示加载图标
       this.loading = true;
 
-      const comment = await request({
-        url: `/articles/${this.$route.params.slug}/comments`,
-        method: 'post',
-        data: { body: this.body }
-      }).catch((error) => {
-        // console.log(error);
-      });
+      const comment = await api.createComment(
+        this.$route.params.slug,
+        this.body
+      );
 
       if (comment) {
-        // console.log(comment);
         this.loadComments();
         this.body = '';
       }
+
+      // 隐藏加载图标
       this.loading = false;
     },
     // 删除评论
-    async deleteComment(event) {
-      // console.log(event.target.dataset.comment);
-      // console.log(event.target);
+    async deleteComment(id) {
+      await api.deleteComment(this.$route.params.slug, id);
 
-      request({
-        url: `/articles/${this.$route.params.slug}/comments/${event.target.dataset.comment}`,
-        method: 'delete'
-      })
-        .then((result) => {
-          // console.log('删除评论成功');
-          this.loadComments();
-        })
-        .catch((error) => {
-          // console.log(error);
-        });
+      this.loadComments();
     },
     // 加载评论
     async loadComments() {
-      const slug = this.$route.params.slug;
-
-      const comments = await request({
-        url: `/articles/${slug}/comments`
-      }).catch((error) => {
-        // console.log(error);
-      });
+      const comments = await api.getComments(this.$route.params.slug);
 
       if (comments) {
-        // console.log('已获取文章评论', comments);
         this.comments = comments.data;
       }
     }

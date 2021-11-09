@@ -3,6 +3,8 @@ import axios from 'axios';
 import { requestBaseUrl } from '@/config/index.js';
 import token from './token';
 
+import { errorHandle } from '@/utils/index.js';
+
 // 创建一个 axios 实例
 const service = axios.create({
   timeout: 5000
@@ -36,10 +38,16 @@ service.interceptors.response.use(
     // console.log('响应拦截器 error');
     // console.log('响应拦截器输出 error.response:', error.response);
     if (error.response.status >= 500) {
-      return Promise.reject({
-        detail: '请求失败，服务器发生异常'
-      });
+      console.log('请求失败，服务器发生异常');
+      errorHandle('请求失败，服务器发生异常');
+      return;
     }
+
+    if (error.response.status >= 400) {
+      errorHandle(error.response.data.detail);
+      return;
+    }
+
     return Promise.reject(error.response.data);
   }
 );

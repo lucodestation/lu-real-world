@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
+import api from '@/utils/api.js';
 
 export default {
   name: 'HomeTags',
@@ -36,21 +36,18 @@ export default {
   },
   async mounted() {
     this.isLoading = true;
-    const tags = await request({
-      url: '/tags'
-    }).catch((error) => {
-      // console.log(error);
-    });
-    // console.log('获取的标签列表', tags);
+
+    const tags = await api.getTagList();
+
     if (tags && tags.data.length) {
       this.tags = tags.data;
     }
+
     this.isLoading = false;
   },
   methods: {
     async tagEvent(event) {
-      const tag = event.target.dataset.tag;
-      this.$emit('tagArticles', tag);
+      this.$emit('tagArticles', event.target.dataset.tag);
     }
   }
 };

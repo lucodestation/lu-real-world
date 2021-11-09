@@ -61,8 +61,7 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
-import token from '@/utils/token.js';
+import api from '@/utils/api.js';
 
 export default {
   name: 'ArticleMeta',
@@ -73,17 +72,12 @@ export default {
       followLoading: false
     };
   },
-  computed: {},
   methods: {
     // 删除文章
     async deleteArticle() {
-      await request({
-        url: `/articles/${this.$route.params.slug}`,
-        method: 'delete',
-        headers: { Authorization: token() }
-      }).catch((error) => {
-        // console.log(error);
-      });
+      await api.deleteArticle(this.$route.params.slug);
+
+      // 返回首页
       this.$router.push('/');
     },
     // 关注/取消关注作者
@@ -95,27 +89,22 @@ export default {
 
       this.followLoading = true;
 
-      let method = this.article.author.following ? 'delete' : 'post';
+      // 判断是关注还是取消关注
+      const prop = this.article.author.following
+        ? 'deleteFollowUser'
+        : 'followUser';
 
-      const user = await request({
-        url: `/profiles/${this.article.author.username}/follow`,
-        method
-      }).catch((error) => {
-        // console.log(error);
-      });
+      const user = await api[prop](this.article.author.username);
 
       if (user) {
-        const article = await request({
-          url: `/articles/${this.article.slug}`
-        }).catch((error) => {
-          console(error.detail);
-        });
+        const article = await api.getArticle(this.article.slug);
 
         if (article) {
           this.$emit('updateArticle', article.data);
         }
-        this.favoriteLoading = false;
       }
+
+      this.favoriteLoading = false;
     },
     // 收藏/取消收藏文章
     async favoritesButton() {
@@ -126,18 +115,17 @@ export default {
 
       this.favoriteLoading = true;
 
-      let method = this.article.favorited ? 'delete' : 'post';
+      // 判断是收藏还是取消收藏
+      const prop = this.article.favorited
+        ? 'deleteFavoriteArticle'
+        : 'favoriteArticle';
 
-      const article = await request({
-        url: `/articles/${this.article.slug}/favorite`,
-        method
-      }).catch((error) => {
-        // console.log(error);
-      });
+      const article = await api[prop](this.article.slug);
 
       if (article) {
         this.$emit('updateArticle', article.data);
       }
+
       this.favoriteLoading = false;
     }
   }
