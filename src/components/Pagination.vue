@@ -87,7 +87,7 @@ export default {
         this.pageNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       }
       if (this.totalPage <= 10) {
-        console.log('10 页以内');
+        // console.log('10 页以内');
         const arr = [];
         for (let i = 1; i <= this.totalPage; i++) {
           arr.push(i);
