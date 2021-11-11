@@ -5,15 +5,9 @@
         <!-- 文章标题 -->
         <h1>{{ article.title }}</h1>
 
-        <div v-if="notFound" style="text-align: center">
-          <h1>404 NOT FOUND</h1>
-          <br />
-          <h5>该文章不存在 | 返回 <router-link to="/">首页</router-link></h5>
-        </div>
-
         <!-- 文章作者 -->
         <ArticleMeta
-          v-if="!notFound"
+          v-if="article.author"
           @updateArticle="updateArticle"
           :article="article"
           :mode="mode"
@@ -43,7 +37,7 @@
       <div class="article-actions">
         <!-- 文章作者 -->
         <ArticleMeta
-          v-if="!notFound"
+          v-if="article.author"
           @updateArticle="updateArticle"
           :article="article"
           :mode="mode"
@@ -75,8 +69,7 @@ export default {
   name: 'ArticlePage',
   data() {
     return {
-      article: {},
-      notFound: true
+      article: {}
     };
   },
   computed: {
@@ -101,7 +94,6 @@ export default {
 
     if (article) {
       this.article = article.data;
-      this.notFound = false;
     }
   },
   methods: {

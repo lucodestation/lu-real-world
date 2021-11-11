@@ -6,20 +6,13 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
-          <!-- 分页 -->
-          <Pagination
-            v-if="articles.articlesCount > 10"
-            :limit="10"
-            :currentPage="currentPage"
-          />
-
           <!-- 选项卡 -->
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
                 <!-- 我的订阅 -->
                 <a
-                  @click="loadArticles('feedArticles')"
+                  @click="feedArticles"
                   class="nav-link"
                   :class="{
                     active: currentTabCard === 'feedArticles',
@@ -33,7 +26,7 @@
               <li class="nav-item">
                 <!-- 全部文章 -->
                 <a
-                  @click="loadArticles('allArticles')"
+                  @click="allArticles"
                   class="nav-link"
                   :class="{ active: currentTabCard === 'allArticles' }"
                   href="javascript:"
@@ -50,19 +43,21 @@
             </ul>
           </div>
 
-          <div v-show="loading" class="article-preview">
+          <!-- <div v-show="loading" class="article-preview">
             正在加载文章 <i class="ion-load-a"></i>
           </div>
 
           <div v-show="!articles.length && !loading" class="article-preview">
             没有文章
-          </div>
+          </div> -->
 
           <!-- 文章列表/预览 -->
           <ArticlePreview
-            v-for="(article, index) in articles"
-            :key="index"
-            :article="article"
+            v-if="currentTabCard"
+            :articles="articles"
+            :articlesCount="articlesCount"
+            :currentTabCard="currentTabCard"
+            :currentTag="currentTag"
           />
         </div>
 
@@ -84,65 +79,59 @@ export default {
       loading: false,
       currentTabCard: '',
       currentTag: '',
-      currentPage: 1
+      currentPage: 1,
+      articlesCount: 0
     };
   },
   components: {
     HomeBanner: () => import('@/components/HomeBanner.vue'),
     ArticlePreview: () => import('@/components/ArticlePreview.vue'),
-    HomeTags: () => import('@/components/HomeTags.vue'),
-    Pagination: () => import('@/components/Pagination.vue')
+    HomeTags: () => import('@/components/HomeTags.vue')
   },
   created() {
-    this.loadArticles('allArticles');
+    this.currentTabCard = 'allArticles';
   },
   methods: {
-    async loadArticles(tab, params) {
+    // 我的订阅
+    async feedArticles() {
       if (
-        this.currentTabCard === tab &&
-        this.currentTabCard !== 'tagArticles'
+        !this.$store.state.isLoggedIn ||
+        this.currentTabCard === 'feedArticles'
       ) {
+        // 如果用户未登录或已经处于“我的订阅”
         return;
       }
 
-      // 改变当前选项卡状态
-      this.currentTabCard = tab;
-
-      // 当点击我的订阅或全部文章时清除 currentTag ，否则切换到我的订阅或全部文章后再次点击上次同一标签是没反应
-      if (this.currentTabCard !== 'tagArticles') {
-        this.currentTag = '';
+      this.currentTabCard = '';
+      setTimeout(() => {
+        this.currentTabCard = 'feedArticles';
+      }, 0);
+    },
+    // 全部文章
+    async allArticles() {
+      if (this.currentTabCard === 'allArticles') {
+        // 如果已经处于“全部文章”
+        return;
       }
-
-      // 清空之前的文章
-      this.articles = [];
-
-      // 显示加载图标
-      this.loading = true;
-
-      // 判断是否是要获取我的订阅
-      const prop = tab === 'feedArticles' ? 'getArticlesFeed' : 'getArticles';
-
-      // 获取文章
-      const articles = await api[prop](params);
-
-      if (articles) {
-        // 将数据放到 articles 上会自动传给子组件
-        this.articles = articles.data.articles;
-      }
-
-      // 隐藏加载图标
-      this.loading = false;
+      this.currentTabCard = '';
+      setTimeout(() => {
+        this.currentTabCard = 'allArticles';
+      }, 0);
     },
     // 标签
     async tagArticles(tag) {
       // 禁止重复点击同一标签
       if (this.currentTag === tag) {
+        // 如果已经处于该标签
         return;
       }
 
       this.currentTag = tag;
 
-      this.loadArticles('tagArticles', { tag });
+      this.currentTabCard = '';
+      setTimeout(() => {
+        this.currentTabCard = 'tagArticles';
+      }, 0);
     }
   }
 };

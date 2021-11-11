@@ -5,18 +5,10 @@
         <div class="row">
           <div class="col-xs-12 col-md-10 offset-md-1">
             <!-- 头像 -->
-            <img v-if="!notFound" :src="profile.image" class="user-img" />
+            <img :src="profile.image" class="user-img" />
 
             <!-- 用户名 -->
             <h4>{{ profile.username }}</h4>
-
-            <div v-if="notFound" style="text-align: center">
-              <h1>404 NOT FOUND</h1>
-              <br />
-              <h5>
-                该用户不存在 | 返回 <router-link to="/">首页</router-link>
-              </h5>
-            </div>
 
             <!-- 个人简介 -->
             <p>{{ profile.bio }}</p>
@@ -58,41 +50,35 @@
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
                 <a
-                  @click="changeTab('myArticles')"
+                  @click="myArticles"
                   class="nav-link"
                   :class="{
                     active: currentTabCard === 'myArticles'
                   }"
                   href="javascript:"
-                  >文章列表</a
+                  >我的文章</a
                 >
               </li>
               <li class="nav-item">
                 <a
-                  @click="changeTab('myFavorites')"
+                  @click="myFavorites"
                   class="nav-link"
                   :class="{
                     active: currentTabCard === 'myFavorites'
                   }"
                   href="javascript:"
-                  >收藏夹</a
+                  >我的收藏</a
                 >
               </li>
             </ul>
           </div>
 
-          <div v-show="loading" class="article-preview">
-            正在加载文章 <i class="ion-load-a"></i>
-          </div>
-          <div v-show="!articles.length && !loading" class="article-preview">
-            没有文章
-          </div>
-
           <!-- 文章列表/预览 -->
-          <article-preview
-            v-for="(article, index) in articles"
-            :key="index"
-            :article="article"
+          <ArticlePreview
+            v-if="currentTabCard"
+            :articles="articles"
+            :articlesCount="articlesCount"
+            :currentTabCard="currentTabCard"
           />
         </div>
       </div>
@@ -114,10 +100,10 @@ export default {
         follows: []
       },
       articles: [],
-      currentTabCard: 'myArticles',
+      currentTabCard: '',
       loading: false,
       followLoading: false,
-      notFound: true
+      articlesCount: 0
     };
   },
   methods: {
@@ -136,33 +122,29 @@ export default {
 
       if (user) {
         this.profile = user.data;
-        this.notFound = false;
       }
     },
-    // 加载文章列表
-    async loadArticle() {
-      this.articles = [];
-      this.loading = true;
-
-      const paramsProp =
-        this.currentTabCard === 'myArticles' ? 'author' : 'favorited';
-
-      const articles = await api.getArticles({
-        [paramsProp]: this.$route.params.username
-      });
-
-      if (articles) {
-        this.articles = articles.data.articles;
-      }
-      this.loading = false;
-    },
-    // 切换选项卡
-    changeTab(tab) {
-      if (this.currentTabCard === tab) {
+    async myArticles() {
+      // console.log('我的文章');
+      if (this.currentTabCard === 'myArticles') {
+        // 如果已经处于“我的文章”
         return;
       }
-      this.currentTabCard = tab;
-      this.loadArticle();
+      this.currentTabCard = '';
+      setTimeout(() => {
+        this.currentTabCard = 'myArticles';
+      }, 0);
+    },
+    async myFavorites() {
+      // console.log('我的收藏');
+      if (this.currentTabCard === 'myFavorites') {
+        // 如果已经处于“我的收藏”
+        return;
+      }
+      this.currentTabCard = '';
+      setTimeout(() => {
+        this.currentTabCard = 'myFavorites';
+      }, 0);
     },
     // 关注/取消关注按钮
     async followEvent() {
@@ -187,21 +169,20 @@ export default {
   },
   watch: {
     $route(to, from) {
-      this.currentTabCard = 'myArticles';
-
       // 加载个人信息
       this.loadProfile();
 
-      // 加载文章列表
-      this.loadArticle();
+      this.currentTabCard = '';
+      setTimeout(() => {
+        this.currentTabCard = 'myArticles';
+      }, 0);
     }
   },
   created() {
     // 加载个人信息
     this.loadProfile();
 
-    // 加载文章列表
-    this.loadArticle();
+    this.currentTabCard = 'myArticles';
   }
 };
 </script>

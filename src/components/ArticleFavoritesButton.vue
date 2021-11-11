@@ -1,5 +1,5 @@
 <template>
-  <button
+  <span
     @click="favoriteEvent"
     class="btn btn-sm pull-xs-right"
     :class="[
@@ -11,7 +11,7 @@
   >
     <i class="ion-heart"></i>
     {{ this.article.favoritesCount }}
-  </button>
+  </span>
 </template>
 
 <script>
