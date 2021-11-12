@@ -27,9 +27,11 @@ if (token().length > 150) {
     }
   });
 
-  if (result.status === 401) {
+  if (result.status !== 200) {
     console.log('Token 已失效');
     localStorage.removeItem('token');
+    // 刷新页面
+    router.go(0);
   }
   // 将用户信息保存到 store
   store.commit('changeCurrentUser', result.responseJSON.data);
