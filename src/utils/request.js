@@ -3,7 +3,7 @@ import axios from 'axios';
 import { requestBaseUrl } from '@/config/index.js';
 import token from './token';
 
-import { errorHandle } from '@/utils/index.js';
+import { errorHandle, wait } from '@/utils/index.js';
 
 // 创建一个 axios 实例
 const service = axios.create({
@@ -12,7 +12,7 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // console.log('请求拦截器');
     config.url = requestBaseUrl + config.url;
     // 只要有 Token 就带着
@@ -31,7 +31,7 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
-    // console.log('响应拦截器 response');
+    // console.log('响应拦截器 response', response.data);
     return response.data;
   },
   (error) => {

@@ -29,11 +29,11 @@ app.use(express.urlencoded({ extended: false }));
 // 挂载路由，将所有 /api 开头的请求都交给 router 路由中间件处理
 app.use('/api', require('./router'));
 
-app.get('/test', (req, res, next) => {
-  res.status(200).json({
-    message: '返回的信息'
-  });
-});
+// app.get('/test', (req, res, next) => {
+//   res.status(200).json({
+//     message: '返回的信息'
+//   });
+// });
 
 // 挂载统一处理服务器错误中间件
 // 要放到所有请求最后边

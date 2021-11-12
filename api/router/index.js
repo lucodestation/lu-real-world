@@ -34,4 +34,15 @@ router.use('/profiles', require('./profiles'));
 router.use('/articles', require('./articles'));
 router.use('/tags', require('./tags'));
 
+// const wait = function (t) {
+//   return new Promise((r) => setTimeout(r, t));
+// };
+
+router.get('/test', async (req, res, next) => {
+  // await wait(30000);
+  res.status(200).json({
+    message: '返回的信息'
+  });
+});
+
 module.exports = router;
